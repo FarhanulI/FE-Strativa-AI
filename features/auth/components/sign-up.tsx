@@ -1,4 +1,8 @@
+"use client";
+
+import { type FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AuthCard } from "@/components/auth/auth-card";
 import { TrustBadge } from "@/components/auth/trust-badge";
 import { Button } from "@/components/ui/button";
@@ -12,8 +16,47 @@ import {
   GoogleIcon,
   UsersIcon,
 } from "@/components/ui/icons";
+import { useRegister } from "@/features/auth/hooks/use-register";
+import { ApiError } from "@/features/auth/types";
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof ApiError) {
+    switch (error.status) {
+      case 409:
+        return "An account with this email already exists.";
+      case 422:
+        return "Please double-check your details and try again.";
+      case 429:
+        return "Too many attempts. Please wait a moment and try again.";
+      default:
+        return "Something went wrong. Please try again.";
+    }
+  }
+  return "Something went wrong. Please try again.";
+}
 
 export function SignUp() {
+  const router = useRouter();
+  const registerMutation = useRegister();
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const email = String(formData.get("email") ?? "");
+    const password = String(formData.get("password") ?? "");
+
+    console.log({formData});
+    
+
+    registerMutation.mutate(
+      { email, password },
+      {
+        onSuccess: () => router.push("/onboarding"),
+      }
+    );
+  }
+
   return (
     <AuthCard>
       <div className="mb-6 text-center">
@@ -25,22 +68,22 @@ export function SignUp() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-3">
+      {/* <div className="flex flex-col gap-3">
         <Button variant="social">
           <GoogleIcon className="h-4 w-4" />
           Sign up with Google
         </Button>
-        {/* <Button variant="social">
+        <Button variant="social">
           <GitHubIcon className="h-4 w-4" />
           Sign up with GitHub
-        </Button> */}
-      </div>
+        </Button> 
+      </div> */}
 
-      <div className="my-6">
+      {/* <div className="my-6">
         <Divider label="Or register with email" />
-      </div>
+      </div> */}
 
-      <form className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         {/* <TextField
           label="Full name"
           name="name"
@@ -54,6 +97,7 @@ export function SignUp() {
           type="email"
           placeholder="jone@gmail.com"
           autoComplete="email"
+          required
         />
         {/* <TextField
           label="Workspace name"
@@ -66,6 +110,7 @@ export function SignUp() {
         <PasswordField
           label="Create password"
           name="password"
+          required
           placeholder="At least 8 characters"
           autoComplete="new-password"
           hint={<span className="text-xs text-text-muted">Min 8 chars</span>}
@@ -95,8 +140,14 @@ export function SignUp() {
           />
         </div>
 
-        <Button type="submit">
-          Create Workspace
+        {registerMutation.isError && (
+          <p className="text-sm text-red-600" role="alert">
+            {getErrorMessage(registerMutation.error)}
+          </p>
+        )}
+
+        <Button type="submit" disabled={registerMutation.isPending}>
+          {registerMutation.isPending ? "Creating workspace..." : "Create Workspace"}
           <ArrowRightIcon className="h-4 w-4" />
         </Button>
       </form>

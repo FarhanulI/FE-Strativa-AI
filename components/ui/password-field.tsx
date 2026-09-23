@@ -7,6 +7,7 @@ import { LockIcon, EyeIcon, EyeOffIcon } from "./icons";
 interface PasswordFieldProps {
   label: string;
   name: string;
+  required?: boolean;
   placeholder?: string;
   hint?: React.ReactNode;
   autoComplete?: string;
@@ -15,6 +16,7 @@ interface PasswordFieldProps {
 export function PasswordField({
   label,
   name,
+  required,
   placeholder,
   hint,
   autoComplete = "current-password",
@@ -27,6 +29,7 @@ export function PasswordField({
       id={fieldId}
       label={label}
       name={name}
+      required={required}
       hint={hint}
       icon={<LockIcon className="h-4 w-4" />}
       type={visible ? "text" : "password"}

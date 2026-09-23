@@ -31,33 +31,30 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-3">
+      {/* <div className="flex flex-col gap-3">
         <Button variant="social">
           <GoogleIcon className="h-4 w-4" />
           Continue with Google
         </Button>
-        <Button variant="social">
-          <GitHubIcon className="h-4 w-4" />
-          Continue with GitHub
-        </Button>
-      </div>
+      </div> */}
 
-      <div className="my-6">
+      {/* <div className="my-6">
         <Divider label="Or sign in with email" />
-      </div>
+      </div> */}
 
       <form className="flex flex-col gap-4">
         <TextField
-          label="Work email"
+          label="Email"
           name="email"
           type="email"
-          placeholder="name@company.com"
+          placeholder="john@gmail.com"
           icon={<MailIcon className="h-4 w-4" />}
           autoComplete="email"
         />
         <PasswordField
           label="Password"
           name="password"
+          required
           placeholder="••••••••"
           hint={
             <Link href="#" className="text-xs font-medium text-primary hover:underline">
@@ -72,11 +69,11 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <div className="mt-4 text-center">
+      {/* <div className="mt-4 text-center">
         <Link href="#" className="text-sm font-medium text-text-muted hover:text-text">
           Log in with Enterprise SSO
         </Link>
-      </div>
+      </div> */}
 
       <p className="mt-6 text-center text-sm text-text-muted">
         Don&apos;t have an account?{" "}
