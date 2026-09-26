@@ -35,3 +35,23 @@ export async function serverFetch<T>(path: string, options: ServerFetchOptions =
 
   return (await response.json()) as T;
 }
+
+export async function serverFetchRaw(
+  path: string,
+  init: RequestInit = {},
+  accessToken?: string
+): Promise<Response> {
+  if (!BACKEND_INTERNAL_URL) {
+    throw new Error("BACKEND_INTERNAL_URL is not set");
+  }
+
+  const { headers, ...rest } = init;
+
+  return fetch(`${BACKEND_INTERNAL_URL}${path}`, {
+    ...rest,
+    headers: {
+      ...headers,
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    },
+  });
+}
