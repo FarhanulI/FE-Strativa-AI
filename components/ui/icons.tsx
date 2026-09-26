@@ -106,3 +106,255 @@ export function SparkleMarkIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export function BuildingIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 21V5.25A1.25 1.25 0 0 1 5.25 4h7.5A1.25 1.25 0 0 1 14 5.25V21M4 21h16M14 21v-6.75A1.25 1.25 0 0 1 15.25 13h3.5A1.25 1.25 0 0 1 20 14.25V21" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8h3M7.5 11.5h3M7.5 15h3" />
+    </svg>
+  );
+}
+
+export function LinkIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 14.5 14.5 9.5" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 6.75 12.7 5.3a3.5 3.5 0 1 1 4.95 4.95l-1.45 1.45M12.75 17.25 11.3 18.7a3.5 3.5 0 1 1-4.95-4.95l1.45-1.45" />
+    </svg>
+  );
+}
+
+export function CheckCircleIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <circle cx="12" cy="12" r="9.25" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 12.25 2.5 2.5 5-5" />
+    </svg>
+  );
+}
+
+export function CameraIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 8.75A1.75 1.75 0 0 1 5.75 7h1.19c.35 0 .68-.18.87-.48l.7-1.1c.19-.3.52-.48.87-.48h4.24c.35 0 .68.18.87.48l.7 1.1c.19.3.52.48.87.48h1.19A1.75 1.75 0 0 1 20 8.75v8.5A1.75 1.75 0 0 1 18.25 19H5.75A1.75 1.75 0 0 1 4 17.25v-8.5Z" />
+      <circle cx="12" cy="13" r="3.25" />
+    </svg>
+  );
+}
+
+export function RefreshCwIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12a7.5 7.5 0 0 1 12.9-5.2M19.5 12a7.5 7.5 0 0 1-12.9 5.2" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17.4 4.5v3.3h-3.3M6.6 19.5v-3.3h3.3" />
+    </svg>
+  );
+}
+
+export function TrashIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5.5 7h13M9.5 7V5.25A1.25 1.25 0 0 1 10.75 4h2.5A1.25 1.25 0 0 1 14.5 5.25V7M7.5 7l.66 11.2a1.75 1.75 0 0 0 1.75 1.65h4.18a1.75 1.75 0 0 0 1.75-1.65L16.5 7" />
+    </svg>
+  );
+}
+
+export function SproutIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-7.5" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 13.5C12 9.5 15 7 19 7c0 4-3 6.5-7 6.5Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 11C12 7.5 9.5 5 6 5c0 3.5 2.5 6 6 6Z" />
+    </svg>
+  );
+}
+
+export function VideoIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <rect x="3" y="6" width="13" height="12" rx="1.75" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="m21 9-5 2.5v1l5 2.5V9Z" />
+    </svg>
+  );
+}
+
+export function TuneIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" d="M4 7h6M14 7h6M4 12h10M18 12h2M4 17h6M14 17h6" />
+      <circle cx="12" cy="7" r="2" />
+      <circle cx="16" cy="12" r="2" />
+      <circle cx="12" cy="17" r="2" />
+    </svg>
+  );
+}
+
+export function LightbulbIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 18h6M10 21h4" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3a6 6 0 0 0-3.5 10.9c.6.44.94 1.15.94 1.9v.2h5.12v-.2c0-.75.34-1.46.94-1.9A6 6 0 0 0 12 3Z" />
+    </svg>
+  );
+}
+
+export function CheckIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="m4.75 12.75 4.5 4.5 10-10.5" />
+    </svg>
+  );
+}
+
+export function ClockIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <circle cx="12" cy="12" r="9.25" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5.25l3.5 2" />
+    </svg>
+  );
+}
+
+export function InfoIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <circle cx="12" cy="12" r="9.25" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 11v5.25" />
+      <circle cx="12" cy="7.75" r="0.1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function TagIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M11.5 3.75h4.75a1 1 0 0 1 1 1v4.75a1 1 0 0 1-.29.71l-8.25 8.25a1 1 0 0 1-1.42 0l-4.25-4.25a1 1 0 0 1 0-1.42l8.25-8.25a1 1 0 0 1 .21-.79Z" />
+      <circle cx="14.25" cy="9.25" r="1.1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function BadgeCheckIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 3.5 12 2l2.5 1.5 2.9-.2 1.3 2.5 2.5 1.3-.2 2.9L22 12l-1.5 2.5.2 2.9-2.5 1.3-1.3 2.5-2.9-.2L12 22l-2.5-1.5-2.9.2-1.3-2.5-2.5-1.3.2-2.9L2 12l1.5-2.5-.2-2.9 2.5-1.3 1.3-2.5 2.9.2Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="m8.5 12.25 2.25 2.25 4.75-5" />
+    </svg>
+  );
+}
+
+export function TargetIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <circle cx="12" cy="12" r="8.5" />
+      <circle cx="12" cy="12" r="4.5" />
+      <circle cx="12" cy="12" r="0.1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function XIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="m6 6 12 12M18 6 6 18" />
+    </svg>
+  );
+}
+
+export function HelpCircleIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <circle cx="12" cy="12" r="9.25" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 9.25a2.5 2.5 0 1 1 3.75 2.17c-.64.37-1.25.9-1.25 1.83v.25" />
+      <circle cx="12" cy="16.75" r="0.1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function PlusIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.75v14.5M4.75 12h14.5" />
+    </svg>
+  );
+}
+
+export function FrownIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <circle cx="12" cy="12" r="9.25" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8.5 15.5a4 4 0 0 1 7 0" />
+      <circle cx="9" cy="9.5" r="0.1" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="9.5" r="0.1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function MessageQuestionIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 5.75A1.75 1.75 0 0 1 5.75 4h12.5A1.75 1.75 0 0 1 20 5.75v8.5A1.75 1.75 0 0 1 18.25 16H9l-4 4v-4H5.75A1.75 1.75 0 0 1 4 14.25v-8.5Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10.25 8.75a1.75 1.75 0 1 1 2.63 1.52c-.45.26-.88.63-.88 1.28v.2" />
+      <circle cx="12" cy="13.75" r="0.1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function GripIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" {...props}>
+      <circle cx="9" cy="6" r="1.1" />
+      <circle cx="9" cy="12" r="1.1" />
+      <circle cx="9" cy="18" r="1.1" />
+      <circle cx="15" cy="6" r="1.1" />
+      <circle cx="15" cy="12" r="1.1" />
+      <circle cx="15" cy="18" r="1.1" />
+    </svg>
+  );
+}
+
+export function TrendingUpIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.5 16.5 9.5 10.5 13.5 14.5 20.5 7.5" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 7.5h5.5V13" />
+    </svg>
+  );
+}
+
+export function FilterIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 5.5h16L14.5 12.5v5.25L9.5 20v-7.5L4 5.5Z" />
+    </svg>
+  );
+}
+
+export function BrainIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 4.25a3 3 0 0 0-3 3v.35a3 3 0 0 0-1.75 5.15 3 3 0 0 0 2 5.2 2.75 2.75 0 0 0 2.75 2.3" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M14.5 4.25a3 3 0 0 1 3 3v.35a3 3 0 0 1 1.75 5.15 3 3 0 0 1-2 5.2 2.75 2.75 0 0 1-2.75 2.3" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 4.25v15.75M14.5 4.25v15.75" />
+    </svg>
+  );
+}
+
+export function BoltIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" {...props}>
+      <path d="M13 2 4 13.5h5.25L10.25 22 20 9.5h-5.5L13 2Z" />
+    </svg>
+  );
+}
+
+export function ShoppingCartIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.5 4.5h1.75l1.1 10.15A1.75 1.75 0 0 0 8.1 16.25h9.15a1.75 1.75 0 0 0 1.72-1.44l1.03-6.06H6" />
+      <circle cx="9.5" cy="19.5" r="1.25" />
+      <circle cx="17" cy="19.5" r="1.25" />
+    </svg>
+  );
+}
