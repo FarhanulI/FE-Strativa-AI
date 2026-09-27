@@ -1,6 +1,7 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -10,33 +11,56 @@ import {
 import { OnboardingFormHeader } from "@/features/onboarding/components/onboarding-form-header";
 import { SuggestionChips } from "@/features/onboarding/components/onboarding-suggestion-chips";
 import { TagInputField } from "@/features/onboarding/components/identity/tag-input-field";
+import { useUpdateBrand } from "@/features/onboarding/hooks/use-update-brand";
+import { useOnboardingState } from "@/features/onboarding/hooks/use-onboarding-state";
 
 const STYLE_MAX = 500;
 const TOTAL_STEPS = 4;
 const CURRENT_STEP = 3;
 
 const TONE_SUGGESTIONS = [
+  "Energetic",
+  "Professional",
+  "Playful",
+  "Bold",
+  "Warm",
   "Authoritative",
-  "Casual",
-  "Thoughtful",
-  "Urgent & High-Energy",
-  "Witty / Humorous",
-  "Educational",
+  "Witty",
+  "Calm",
   "Minimalist",
+  "Inspirational",
+  "Casual",
+  "Direct",
 ];
 
-const GUARDRAIL_SUGGESTIONS = [
-  "Corporate jargon",
-  "Exclamation mark overuse",
-  "Passive voice",
-  "Hard-selling pitches",
-  "Wall of text",
+const THINGS_TO_AVOID_SUGGESTIONS = [
+  "Jargon without explanation",
+  "Clickbait phrasing",
+  "Political topics",
+  "Profanity",
+  "Over-promising",
+  "Negative/complaining tone",
+  "Overly salesy language",
 ];
 
 export function BrandVoiceStep() {
   const [tones, setTones] = useState<string[]>([]);
   const [style, setStyle] = useState("");
   const [avoid, setAvoid] = useState<string[]>([]);
+
+  const router = useRouter();
+  const updateBrandMutation = useUpdateBrand();
+  const { data: onboardingState } = useOnboardingState();
+  const hasHydrated = useRef(false);
+
+  useEffect(() => {
+    if (hasHydrated.current || !onboardingState?.brand) return;
+    hasHydrated.current = true;
+    const brand = onboardingState.brand;
+    setTones(brand.tone);
+    setStyle(brand.style);
+    setAvoid(brand.things_to_avoid);
+  }, [onboardingState]);
 
   const isValid = tones.length >= 1;
 
@@ -46,6 +70,18 @@ export function BrandVoiceStep() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!isValid) return;
+
+    updateBrandMutation.mutate(
+      {
+        tone: tones,
+        style,
+        things_to_avoid: avoid,
+      },
+      {
+        onSuccess: () => router.push("/onboarding/goals"),
+      }
+    );
   }
 
   return (
@@ -157,7 +193,7 @@ export function BrandVoiceStep() {
             />
             <SuggestionChips
               label="Suggested guardrails"
-              options={GUARDRAIL_SUGGESTIONS}
+              options={THINGS_TO_AVOID_SUGGESTIONS}
               onSelect={(value) => setAvoid((prev) => addUnique(prev, value))}
             />
           </div>
@@ -172,9 +208,16 @@ export function BrandVoiceStep() {
             <span className="text-xs text-text-muted">Estimated setup: 1 min remaining</span>
           </div>
 
+          {updateBrandMutation.isError && (
+            <p className="text-sm text-red-600" role="alert">
+              Something went wrong saving your brand voice. Please try again.
+            </p>
+          )}
+
           <div className="flex flex-col-reverse items-center justify-between gap-4 border-t border-border pt-4 sm:flex-row">
             <button
               type="button"
+              onClick={() => router.push("/onboarding/audience")}
               className="inline-flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-text-muted transition-colors hover:bg-surface-muted hover:text-text sm:w-auto"
             >
               <ArrowLeftIcon className="h-4 w-4" />
@@ -182,10 +225,10 @@ export function BrandVoiceStep() {
             </button>
             <button
               type="submit"
-              disabled={!isValid}
+              disabled={!isValid || updateBrandMutation.isPending}
               className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
-              Continue to Strategy
+              {updateBrandMutation.isPending ? "Saving..." : "Continue to Strategy"}
               <ArrowRightIcon className="h-4 w-4" />
             </button>
           </div>
