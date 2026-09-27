@@ -6,8 +6,9 @@ import { ApiError } from "@/lib/api/errors";
 
 function normalizeError(error: unknown): void {
   if (error instanceof ApiError && error.status === 401) {
-    // TODO: session-expiry handling (redirect to /login, clear cached queries, etc.)
-    // once the login flow exists. Left as a no-op for now.
+    // Intentionally a no-op: by the time a 401 reaches the cache, clientFetch has
+    // already tried a silent refresh, failed, and fired handleSessionExpired()
+    // (lib/auth/session-events.ts), which clears this cache and redirects to /login.
   }
 }
 
@@ -31,8 +32,21 @@ export function createQueryClient(): QueryClient {
   });
 }
 
+let browserQueryClient: QueryClient | undefined;
+
+// On the server every request gets a fresh client (never share cached data between
+// users). In the browser there is exactly one, so non-component code (e.g.
+// handleSessionExpired) can reach the same instance the provider mounted.
+export function getQueryClient(): QueryClient {
+  if (typeof window === "undefined") {
+    return createQueryClient();
+  }
+  browserQueryClient ??= createQueryClient();
+  return browserQueryClient;
+}
+
 export function QueryProvider({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(() => createQueryClient());
+  const [queryClient] = useState(() => getQueryClient());
 
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
