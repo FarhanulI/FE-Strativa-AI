@@ -1,3 +1,5 @@
+import { OnboardingGuard } from "@/features/onboarding/components/onboarding-guard";
+
 export default function OnboardingLayout({
   children,
 }: LayoutProps<"/onboarding">) {
@@ -20,7 +22,7 @@ export default function OnboardingLayout({
       </header>
 
       <main className="flex flex-1 flex-col items-center px-4 pt-16 md:px-8">
-        {children}
+        <OnboardingGuard>{children}</OnboardingGuard>
       </main>
     </div>
   );
