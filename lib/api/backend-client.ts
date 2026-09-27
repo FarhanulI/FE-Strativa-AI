@@ -47,11 +47,23 @@ export async function serverFetchRaw(
 
   const { headers, ...rest } = init;
 
-  return fetch(`${BACKEND_INTERNAL_URL}${path}`, {
+  const response = await fetch(`${BACKEND_INTERNAL_URL}${path}`, {
     ...rest,
     headers: {
       ...headers,
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
   });
+
+  // fetch() transparently decompresses a gzip-encoded response body but leaves the
+  // stale Content-Encoding/Content-Length headers on `response.headers` — passing
+  // those through as-is would make the browser's own fetch try to gunzip an
+  // already-decoded body. Not reachable today (nothing compresses responses on
+  // BACKEND_INTERNAL_URL), but becomes live the moment compression is added to the
+  // FastAPI backend or anything in front of it (a different repo from this one).
+  const safeHeaders = new Headers(response.headers);
+  safeHeaders.delete("content-encoding");
+  safeHeaders.delete("content-length");
+
+  return new Response(response.body, { status: response.status, headers: safeHeaders });
 }
