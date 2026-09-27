@@ -8,7 +8,7 @@ export function useUploadLogo() {
   return useMutation({
     mutationFn: uploadLogo,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ONBOARDING_STATE_QUERY_KEY });
+      return queryClient.invalidateQueries({ queryKey: ONBOARDING_STATE_QUERY_KEY });
     },
   });
 }

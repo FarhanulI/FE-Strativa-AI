@@ -8,7 +8,7 @@ export function useUpdateGoals() {
   return useMutation({
     mutationFn: updateGoals,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ONBOARDING_STATE_QUERY_KEY });
+      return queryClient.invalidateQueries({ queryKey: ONBOARDING_STATE_QUERY_KEY });
     },
   });
 }

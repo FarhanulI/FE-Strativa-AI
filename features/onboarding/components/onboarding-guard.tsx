@@ -39,38 +39,46 @@ function resolveResumePath(state: OnboardingState): (typeof TRACKED_STEP_PATHS)[
   return "/onboarding/goals";
 }
 
+function Spinner() {
+  return (
+    <div className="flex flex-1 items-center justify-center py-24">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+    </div>
+  );
+}
+
 export function OnboardingGuard({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { data, isLoading, isError, error } = useOnboardingState();
 
-  const isTrackedStep = (TRACKED_STEP_PATHS as readonly string[]).includes(pathname);
+  const trackedPaths = TRACKED_STEP_PATHS as readonly string[];
+  const isTrackedStep = trackedPaths.includes(pathname);
+  const isCompleted = data?.onboarding_status === "completed";
+
+  const resumePath = data ? resolveResumePath(data) : null;
+  const currentIndex = trackedPaths.indexOf(pathname);
+  const resumeIndex = resumePath ? trackedPaths.indexOf(resumePath) : -1;
+  const pendingForwardRedirect = isTrackedStep && resumePath !== null && currentIndex > resumeIndex;
 
   useEffect(() => {
     if (!data) return;
 
-    if (data.onboarding_status === "completed") {
+    if (isCompleted) {
       router.replace("/dashboard");
       return;
     }
 
-    if (!isTrackedStep) return;
-
-    const resumePath = resolveResumePath(data);
-    if (resumePath !== pathname) {
+    if (pendingForwardRedirect && resumePath) {
       router.replace(resumePath);
     }
-  }, [data, isTrackedStep, pathname, router]);
+  }, [data, isCompleted, pendingForwardRedirect, resumePath, router]);
 
   if (isLoading) {
-    return (
-      <div className="flex flex-1 items-center justify-center py-24">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-      </div>
-    );
+    return <Spinner />;
   }
 
-  if (isError) {
+  if (isError && !data) {
     if (error instanceof ApiError && error.status === 401) {
       return (
         <div className="flex flex-1 flex-col items-center justify-center gap-4 py-24 text-center">
@@ -89,6 +97,10 @@ export function OnboardingGuard({ children }: { children: ReactNode }) {
         Something went wrong loading your onboarding progress. Please refresh the page.
       </div>
     );
+  }
+
+  if (isCompleted || pendingForwardRedirect) {
+    return <Spinner />;
   }
 
   return <>{children}</>;

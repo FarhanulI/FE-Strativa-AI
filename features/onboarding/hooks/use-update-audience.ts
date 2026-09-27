@@ -8,7 +8,7 @@ export function useUpdateAudience() {
   return useMutation({
     mutationFn: updateAudience,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ONBOARDING_STATE_QUERY_KEY });
+      return queryClient.invalidateQueries({ queryKey: ONBOARDING_STATE_QUERY_KEY });
     },
   });
 }

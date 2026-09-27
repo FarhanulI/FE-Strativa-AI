@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/text-field";
@@ -15,6 +15,7 @@ import {
 import { WorkspaceLogoUpload } from "@/features/onboarding/components/basic/workspace-logo-upload";
 import { useUpdateBasics } from "@/features/onboarding/hooks/use-update-basics";
 import { useUploadLogo } from "@/features/onboarding/hooks/use-upload-logo";
+import { useOnboardingState } from "@/features/onboarding/hooks/use-onboarding-state";
 
 const DISPLAY_NAME_MAX = 60;
 const WORKSPACE_NAME_MAX = 48;
@@ -37,17 +38,33 @@ export function WorkspaceBasicsForm() {
 
   const router = useRouter();
   const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [existingLogoUrl, setExistingLogoUrl] = useState<string | undefined>(undefined);
   const updateBasicsMutation = useUpdateBasics();
   const uploadLogoMutation = useUploadLogo();
+  const { data: onboardingState } = useOnboardingState();
+  const hasHydrated = useRef(false);
+
+  useEffect(() => {
+    if (hasHydrated.current || !onboardingState?.basics) return;
+    hasHydrated.current = true;
+    const basics = onboardingState.basics;
+    setDisplayName(basics.user_name);
+    setWorkspaceName(basics.workspace_name);
+    setExistingLogoUrl(basics.logo_url);
+  }, [onboardingState]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!isValid) return;
 
-    let logoUrl: string | undefined;
+    let logoUrl: string | undefined = existingLogoUrl;
     if (logoFile) {
-      const result = await uploadLogoMutation.mutateAsync(logoFile);
-      logoUrl = result.logo_url;
+      try {
+        const result = await uploadLogoMutation.mutateAsync(logoFile);
+        logoUrl = result.logo_url;
+      } catch {
+        return;
+      }
     }
 
     updateBasicsMutation.mutate(
@@ -58,7 +75,6 @@ export function WorkspaceBasicsForm() {
       },
       {
         onSuccess: () => {
-          sessionStorage.setItem("onboarding_show_experience", "1");
           router.push("/onboarding/experience");
         },
       }

@@ -8,7 +8,7 @@ export function useCompleteOnboarding() {
   return useMutation({
     mutationFn: completeOnboarding,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ONBOARDING_STATE_QUERY_KEY });
+      return queryClient.invalidateQueries({ queryKey: ONBOARDING_STATE_QUERY_KEY });
     },
   });
 }

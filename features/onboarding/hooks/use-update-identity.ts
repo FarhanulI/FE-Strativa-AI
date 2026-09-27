@@ -8,7 +8,7 @@ export function useUpdateIdentity() {
   return useMutation({
     mutationFn: updateIdentity,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ONBOARDING_STATE_QUERY_KEY });
+      return queryClient.invalidateQueries({ queryKey: ONBOARDING_STATE_QUERY_KEY });
     },
   });
 }
