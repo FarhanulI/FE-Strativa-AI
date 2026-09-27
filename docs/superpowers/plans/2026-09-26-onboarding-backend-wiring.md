@@ -807,12 +807,12 @@ Pass the callback down and reflect pending state on the submit button (styling c
 
 Place it directly before the `<div className="flex flex-col-reverse ...">` buttons row.
 
-- [ ] **Step 2: Verify it compiles**
+- [ ] **Step 3: Verify it compiles**
 
 Run: `npx tsc --noEmit`
 Expected: no errors in the two modified files.
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 4: Commit**
 
 ```bash
 git add features/onboarding/components/basic
