@@ -1,6 +1,7 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -13,6 +14,8 @@ import {
 import { DynamicListField } from "@/features/onboarding/components/audience/dynamic-list-field";
 import { OnboardingFormHeader } from "@/features/onboarding/components/onboarding-form-header";
 import { TagInputField } from "@/features/onboarding/components/identity/tag-input-field";
+import { useUpdateAudience } from "@/features/onboarding/hooks/use-update-audience";
+import { useOnboardingState } from "@/features/onboarding/hooks/use-onboarding-state";
 
 const DESCRIPTION_MAX = 300;
 const TOTAL_STEPS = 4;
@@ -24,12 +27,40 @@ export function AudienceStep() {
   const [painPoints, setPainPoints] = useState<string[]>([]);
   const [questions, setQuestions] = useState<string[]>([]);
 
+  const router = useRouter();
+  const updateAudienceMutation = useUpdateAudience();
+  const { data: onboardingState } = useOnboardingState();
+  const hasHydrated = useRef(false);
+
+  useEffect(() => {
+    if (hasHydrated.current || !onboardingState?.audience) return;
+    hasHydrated.current = true;
+    const audience = onboardingState.audience;
+    setDescription(audience.target_audience_description);
+    setInterests(audience.interests);
+    setPainPoints(audience.pain_points);
+    setQuestions(audience.questions);
+  }, [onboardingState]);
+
   const descriptionValid = description.trim().length > 0;
   const nuancesValid = painPoints.length + questions.length >= 1;
   const isValid = descriptionValid && nuancesValid;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!isValid) return;
+
+    updateAudienceMutation.mutate(
+      {
+        target_audience_description: description,
+        interests,
+        pain_points: painPoints,
+        questions,
+      },
+      {
+        onSuccess: () => router.push("/onboarding/brand-voice"),
+      }
+    );
   }
 
   return (
@@ -181,9 +212,16 @@ export function AudienceStep() {
             <span className="text-xs text-text-muted">Estimated setup: 1 min remaining</span>
           </div>
 
+          {updateAudienceMutation.isError && (
+            <p className="text-sm text-red-600" role="alert">
+              Something went wrong saving your audience. Please try again.
+            </p>
+          )}
+
           <div className="flex flex-col-reverse items-center justify-between gap-4 border-t border-border pt-4 sm:flex-row">
             <button
               type="button"
+              onClick={() => router.push("/onboarding/identity")}
               className="inline-flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-text-muted transition-colors hover:bg-surface-muted hover:text-text sm:w-auto"
             >
               <ArrowLeftIcon className="h-4 w-4" />
@@ -191,10 +229,10 @@ export function AudienceStep() {
             </button>
             <button
               type="submit"
-              disabled={!isValid}
+              disabled={!isValid || updateAudienceMutation.isPending}
               className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
-              Continue to Strategy
+              {updateAudienceMutation.isPending ? "Saving..." : "Continue to Strategy"}
               <ArrowRightIcon className="h-4 w-4" />
             </button>
           </div>
