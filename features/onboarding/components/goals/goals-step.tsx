@@ -1,87 +1,96 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeftIcon,
   BoltIcon,
   BrainIcon,
   CheckCircleIcon,
-  FilterIcon,
-  ShoppingCartIcon,
   TrendingUpIcon,
   UsersIcon,
 } from "@/components/ui/icons";
 import { GoalOptionCard } from "@/features/onboarding/components/goals/goal-option-card";
 import { OnboardingFormHeader } from "@/features/onboarding/components/onboarding-form-header";
+import type { Goal } from "@/features/onboarding/types";
+import { useUpdateGoals } from "@/features/onboarding/hooks/use-update-goals";
+import { useCompleteOnboarding } from "@/features/onboarding/hooks/use-complete-onboarding";
+import { useOnboardingState } from "@/features/onboarding/hooks/use-onboarding-state";
 
 const TOTAL_STEPS = 4;
 const CURRENT_STEP = 4;
 
 interface GoalOption {
-  id: string;
+  value: Goal;
   icon: typeof TrendingUpIcon;
-  title: string;
-  description: string;
+  label: string;
+  subtitle: string;
 }
 
 const GOAL_OPTIONS: GoalOption[] = [
   {
-    id: "reach",
+    value: "growth",
     icon: TrendingUpIcon,
-    title: "Scale Organic Reach",
-    description:
-      "Maximize impressions across LinkedIn, X, and newsletters with viral hooks and topical commentary.",
+    label: "Growth",
+    subtitle: "More followers, more reach",
   },
   {
-    id: "leads",
-    icon: FilterIcon,
-    title: "Generate Inbound Leads",
-    description:
-      "Attract decision-makers and high-intent prospects with authoritative breakdown threads and case studies.",
-  },
-  {
-    id: "authority",
+    value: "authority",
     icon: BrainIcon,
-    title: "Establish Thought Leadership",
-    description:
-      "Position your brand and key executives as industry authorities with tactical research and teardowns.",
+    label: "Authority",
+    subtitle: "Be recognized as an expert",
   },
   {
-    id: "speed",
+    value: "engagement",
     icon: BoltIcon,
-    title: "Speed Up Content Creation",
-    description:
-      "Cut content production cycles from 10+ hours a week down to minutes with calibrated brand voice models.",
+    label: "Engagement",
+    subtitle: "More comments, shares, saves",
   },
   {
-    id: "conversions",
-    icon: ShoppingCartIcon,
-    title: "Drive Product Conversions",
-    description:
-      "Transform engaged readers into active trial signups and customers through educational and solution selling.",
-  },
-  {
-    id: "community",
+    value: "community",
     icon: UsersIcon,
-    title: "Build an Engaged Community",
-    description:
-      "Spark viral discussions, high-retention reply threads, and sustained interactive audience engagement.",
+    label: "Community",
+    subtitle: "Build a loyal, connected audience",
   },
 ];
 
 export function GoalsStep() {
-  const [selected, setSelected] = useState<string[]>(["reach", "leads"]);
+  const router = useRouter();
+  const updateGoalsMutation = useUpdateGoals();
+  const completeOnboardingMutation = useCompleteOnboarding();
+  const { data: onboardingState } = useOnboardingState();
+  const hasHydrated = useRef(false);
+
+  const [selected, setSelected] = useState<Goal[]>(["growth"]);
 
   const isValid = selected.length >= 1;
 
-  function toggleGoal(id: string) {
+  useEffect(() => {
+    if (hasHydrated.current || !onboardingState?.goals) return;
+    hasHydrated.current = true;
+    setSelected(onboardingState.goals.goals);
+  }, [onboardingState]);
+
+  function toggleGoal(value: Goal) {
     setSelected((prev) =>
-      prev.includes(id) ? prev.filter((goalId) => goalId !== id) : [...prev, id]
+      prev.includes(value) ? prev.filter((goalValue) => goalValue !== value) : [...prev, value]
     );
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!isValid) return;
+
+    updateGoalsMutation.mutate(
+      { goals: selected },
+      {
+        onSuccess: () => {
+          completeOnboardingMutation.mutate(undefined, {
+            onSuccess: () => router.push("/dashboard"),
+          });
+        },
+      }
+    );
   }
 
   return (
@@ -111,12 +120,12 @@ export function GoalsStep() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {GOAL_OPTIONS.map((goal) => (
             <GoalOptionCard
-              key={goal.id}
+              key={goal.value}
               icon={<goal.icon className="h-5 w-5" />}
-              title={goal.title}
-              description={goal.description}
-              selected={selected.includes(goal.id)}
-              onToggle={() => toggleGoal(goal.id)}
+              title={goal.label}
+              description={goal.subtitle}
+              selected={selected.includes(goal.value)}
+              onToggle={() => toggleGoal(goal.value)}
             />
           ))}
         </div>
@@ -133,9 +142,16 @@ export function GoalsStep() {
           </span>
         </div>
 
+        {(updateGoalsMutation.isError || completeOnboardingMutation.isError) && (
+          <p className="text-sm text-red-600" role="alert">
+            Something went wrong completing your setup. Please try again.
+          </p>
+        )}
+
         <div className="flex flex-col-reverse items-center justify-between gap-4 border-t border-border pt-4 sm:flex-row">
           <button
             type="button"
+            onClick={() => router.push("/onboarding/brand-voice")}
             className="inline-flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-text-muted transition-colors hover:bg-surface-muted hover:text-text sm:w-auto"
           >
             <ArrowLeftIcon className="h-4 w-4" />
@@ -143,10 +159,12 @@ export function GoalsStep() {
           </button>
           <button
             type="submit"
-            disabled={!isValid}
+            disabled={!isValid || updateGoalsMutation.isPending || completeOnboardingMutation.isPending}
             className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
-            Complete Setup &amp; Launch
+            {updateGoalsMutation.isPending || completeOnboardingMutation.isPending
+              ? "Finishing setup..."
+              : "Complete Setup & Launch"}
           </button>
         </div>
       </form>
