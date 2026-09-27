@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/text-field";
 import {
@@ -12,6 +13,8 @@ import {
   UserCircleIcon,
 } from "@/components/ui/icons";
 import { WorkspaceLogoUpload } from "@/features/onboarding/components/basic/workspace-logo-upload";
+import { useUpdateBasics } from "@/features/onboarding/hooks/use-update-basics";
+import { useUploadLogo } from "@/features/onboarding/hooks/use-upload-logo";
 
 const DISPLAY_NAME_MAX = 60;
 const WORKSPACE_NAME_MAX = 48;
@@ -32,8 +35,34 @@ export function WorkspaceBasicsForm() {
   const slug = useMemo(() => toSlug(workspaceName), [workspaceName]);
   const isValid = displayName.trim().length > 0 && workspaceName.trim().length > 0;
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const router = useRouter();
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const updateBasicsMutation = useUpdateBasics();
+  const uploadLogoMutation = useUploadLogo();
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!isValid) return;
+
+    let logoUrl: string | undefined;
+    if (logoFile) {
+      const result = await uploadLogoMutation.mutateAsync(logoFile);
+      logoUrl = result.logo_url;
+    }
+
+    updateBasicsMutation.mutate(
+      {
+        user_name: displayName,
+        workspace_name: workspaceName,
+        ...(logoUrl ? { logo_url: logoUrl } : {}),
+      },
+      {
+        onSuccess: () => {
+          sessionStorage.setItem("onboarding_show_experience", "1");
+          router.push("/onboarding/experience");
+        },
+      }
+    );
   }
 
   return (
@@ -63,7 +92,7 @@ export function WorkspaceBasicsForm() {
         onSubmit={handleSubmit}
         className="flex flex-col gap-8 rounded-xl border border-border bg-surface p-6 shadow-sm md:p-8"
       >
-        <WorkspaceLogoUpload />
+        <WorkspaceLogoUpload onFileSelect={setLogoFile} />
 
         <div className="h-px w-full bg-border" />
 
@@ -125,6 +154,12 @@ export function WorkspaceBasicsForm() {
           </div>
         )}
 
+        {(updateBasicsMutation.isError || uploadLogoMutation.isError) && (
+          <p className="text-sm text-red-600" role="alert">
+            Something went wrong saving your workspace. Please try again.
+          </p>
+        )}
+
         <div className="flex flex-col-reverse items-center justify-between gap-4 pt-2 sm:flex-row">
           <button
             type="button"
@@ -133,8 +168,14 @@ export function WorkspaceBasicsForm() {
             <HelpCircleIcon className="h-4 w-4" />
             Need help?
           </button>
-          <Button type="submit" disabled={!isValid} className="sm:w-auto">
-            Save &amp; Continue to Onboarding
+          <Button
+            type="submit"
+            disabled={!isValid || uploadLogoMutation.isPending || updateBasicsMutation.isPending}
+            className="sm:w-auto"
+          >
+            {updateBasicsMutation.isPending || uploadLogoMutation.isPending
+              ? "Saving..."
+              : "Save & Continue to Onboarding"}
             <ArrowRightIcon className="h-4 w-4" />
           </Button>
         </div>

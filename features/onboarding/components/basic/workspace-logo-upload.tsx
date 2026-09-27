@@ -6,7 +6,11 @@ import { CameraIcon, RefreshCwIcon, TrashIcon } from "@/components/ui/icons";
 const MAX_SIZE_BYTES = 5 * 1024 * 1024;
 const ACCEPTED_TYPES = "image/png, image/jpeg, image/webp";
 
-export function WorkspaceLogoUpload() {
+interface WorkspaceLogoUploadProps {
+  onFileSelect?: (file: File | null) => void;
+}
+
+export function WorkspaceLogoUpload({ onFileSelect }: WorkspaceLogoUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -31,10 +35,12 @@ export function WorkspaceLogoUpload() {
 
     setError(null);
     setFile(selected);
+    onFileSelect?.(selected);
   }
 
   function handleRemove() {
     setFile(null);
+    onFileSelect?.(null);
     setError(null);
     if (inputRef.current) inputRef.current.value = "";
   }
