@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -35,6 +36,7 @@ const TOTAL_STEPS = 6;
 const CURRENT_STEP = 2;
 
 export function ExperienceSelector() {
+  const router = useRouter();
   const [pathway, setPathway] = useState<ExperiencePathway>("experienced");
   const calibration = CALIBRATION_COPY[pathway];
 
@@ -135,6 +137,11 @@ export function ExperienceSelector() {
             </div>
           </div>
           <div className="mt-8 flex flex-col gap-3">
+            <p className="text-xs leading-snug text-text-muted">
+              We&apos;re building a tailored setup that imports from your existing content —
+              for now, you&apos;ll fill this in manually, and it only takes a couple of
+              minutes.
+            </p>
             <div className="flex items-start gap-3 rounded-lg bg-surface-muted p-3.5">
               <span className="mt-0.5 text-primary">
                 <TuneIcon className="h-4 w-4" />
@@ -207,6 +214,7 @@ export function ExperienceSelector() {
       <div className="flex flex-col items-center justify-between gap-4 pt-2 sm:flex-row">
         <button
           type="button"
+          onClick={() => router.push("/onboarding")}
           className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-surface px-6 py-3 text-sm font-semibold text-text-muted transition-all hover:bg-surface-muted hover:text-text sm:w-auto"
         >
           <ArrowLeftIcon className="h-4 w-4" />
@@ -214,6 +222,7 @@ export function ExperienceSelector() {
         </button>
         <button
           type="button"
+          onClick={() => router.push("/onboarding/identity")}
           className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground shadow-md transition-all hover:bg-primary/90 sm:w-auto"
         >
           Continue to Identity
