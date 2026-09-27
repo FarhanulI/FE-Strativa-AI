@@ -2,13 +2,15 @@
 import { parseApiError } from "@/lib/api/errors";
 
 export async function clientFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const { headers, ...rest } = options;
+  const { headers, body, ...rest } = options;
+  const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
 
   const response = await fetch(path, {
     ...rest,
+    body,
     credentials: "include",
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...headers,
     },
   });
