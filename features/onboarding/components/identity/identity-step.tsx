@@ -1,6 +1,7 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -12,6 +13,8 @@ import {
 } from "@/components/ui/icons";
 import { OnboardingFormHeader } from "@/features/onboarding/components/onboarding-form-header";
 import { TagInputField } from "@/features/onboarding/components/identity/tag-input-field";
+import { useUpdateIdentity } from "@/features/onboarding/hooks/use-update-identity";
+import { useOnboardingState } from "@/features/onboarding/hooks/use-onboarding-state";
 
 const POSITIONING_MAX = 200;
 const TOTAL_STEPS =4;
@@ -24,6 +27,21 @@ export function IdentityStep() {
   const [topics, setTopics] = useState<string[]>([]);
   const [expertise, setExpertise] = useState<string[]>([]);
 
+  const router = useRouter();
+  const updateIdentityMutation = useUpdateIdentity();
+  const { data: onboardingState } = useOnboardingState();
+  const hasHydrated = useRef(false);
+
+  useEffect(() => {
+    if (hasHydrated.current || !onboardingState?.identity) return;
+    hasHydrated.current = true;
+    const identity = onboardingState.identity;
+    setPositioning(identity.positioning);
+    setPrimaryNiche(identity.primary_niche);
+    setTopics(identity.topics);
+    setExpertise(identity.expertise);
+  }, [onboardingState]);
+
   const positioningValid = positioning.trim().length > 0;
   const nicheValid = primaryNiche.trim().length > 0;
   const topicsValid = topics.length >= 1;
@@ -35,6 +53,19 @@ export function IdentityStep() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!isValid) return;
+
+    updateIdentityMutation.mutate(
+      {
+        positioning,
+        primary_niche: primaryNiche,
+        topics,
+        expertise,
+      },
+      {
+        onSuccess: () => router.push("/onboarding/audience"),
+      }
+    );
   }
 
   return (
@@ -183,9 +214,16 @@ export function IdentityStep() {
             <span className="text-xs text-text-muted">Estimated setup: 2 min remaining</span>
           </div>
 
+          {updateIdentityMutation.isError && (
+            <p className="text-sm text-red-600" role="alert">
+              Something went wrong saving your brand identity. Please try again.
+            </p>
+          )}
+
           <div className="flex flex-col-reverse items-center justify-between gap-4 border-t border-border pt-4 sm:flex-row">
             <button
               type="button"
+              onClick={() => router.push("/onboarding/experience")}
               className="inline-flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-text-muted transition-colors hover:bg-surface-muted hover:text-text sm:w-auto"
             >
               <ArrowLeftIcon className="h-4 w-4" />
@@ -193,10 +231,10 @@ export function IdentityStep() {
             </button>
             <button
               type="submit"
-              disabled={!isValid}
+              disabled={!isValid || updateIdentityMutation.isPending}
               className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
-              Continue to Audience
+              {updateIdentityMutation.isPending ? "Saving..." : "Continue to Audience"}
               <ArrowRightIcon className="h-4 w-4" />
             </button>
           </div>
